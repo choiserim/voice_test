@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>청호솔루션 경영진단 대시보드</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --p:#5B63F6;--p15:#8A91FA;--p2:#AEB8FF;--p3:#E3E8FF;--tint:#F1F4FF;
+  --ink:#1E2235;--body:#3B3F52;--sub:#4A4F63;--muted:#6B7088;--line:#E2E5EE;
+  --bg:#F6F7FB;--card:#FFFFFF;--gray:#F4F5F8;--gray2:#F7F8FB;--g3:#B7BCCB;
+  --good:#1F9D5C;--goodBg:#E6F6EE;--warn:#E59A1A;--warnBg:#FFF4E0;--bad:#D9483B;--badBg:#FDECEA;--coral:#E8613F;--redBg:#FFF3F0;--mint:#C9EBD7;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Pretendard,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+b,strong{font-weight:700}
+.hl{color:var(--p);font-weight:700}.red{color:var(--bad);font-weight:700}.grn{color:var(--good);font-weight:700}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh;background:linear-gradient(90deg,#fff 250px,var(--bg) 250px)}
+nav{background:#fff;border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px 16px;border-bottom:2px solid var(--p);margin-bottom:12px}
+.logo{width:42px;height:42px;border-radius:50%;background:var(--tint);color:var(--p);display:grid;place-items:center;font-weight:800;font-size:13px;border:1px solid var(--p3)}
+.brand h1{font-size:16px;margin:0}.brand small{color:var(--muted);font-size:11.5px}
+nav button{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;font:inherit;font-size:13.5px;color:var(--body);cursor:pointer}
+nav button .n{color:var(--muted);font-weight:700;width:20px;flex:none}
+nav button:hover{background:var(--gray)}
+nav button.on{background:var(--tint);color:var(--p);font-weight:700}nav button.on .n{color:var(--p)}
+.navfoot{font-size:11px;color:var(--muted);padding:14px 10px;line-height:1.5}
+main{padding:28px 36px 60px;max-width:1320px;width:100%}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-top:2px solid var(--p);padding-top:14px;margin-bottom:14px}
+.sec{font-size:13px;font-weight:700;color:var(--muted)}
+.top h2{font-size:26px;margin:2px 0 0;letter-spacing:-.3px}
+.chips{display:flex;gap:6px;flex:none}
+.chip{background:var(--tint);border:1px solid var(--p3);color:var(--p);font-weight:700;font-size:12px;border-radius:20px;padding:3px 12px}
+.hook{background:var(--tint);border-radius:12px;padding:16px 22px;font-size:20px;font-weight:700;margin-bottom:18px;letter-spacing:-.2px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g64{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}.g46{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card h3{font-size:15px;margin:0 0 10px}.card h3 small{font-weight:400;color:var(--muted);font-size:12px;margin-left:6px}
+.tint{background:var(--tint);border-color:transparent}.soft{background:#EEF0F6;border-color:transparent}.warmbg{background:var(--redBg);border-color:transparent}
+.kpi .v{font-size:32px;font-weight:800;letter-spacing:-.5px;line-height:1.15}.kpi .v small{font-size:15px;margin-left:3px}
+.kpi .l{font-weight:700;margin-top:4px}.kpi .s{color:var(--muted);font-size:12.5px}
+.note{color:var(--sub);font-size:13.5px}.mut{color:var(--muted);font-size:12.5px}
+.side{display:grid;gap:12px;margin-top:16px}
+.side .card h4{margin:0 0 4px;color:var(--p);font-size:13.5px}.side .card h4:before{content:"◆ "}
+.side .card p{margin:0;font-size:13.5px;color:var(--body)}
+svg text{font-family:inherit}
+.chart{width:100%;height:auto;display:block}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--p);color:#fff;font-weight:700;padding:7px 8px}
+td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:center}td:first-child{text-align:left}
+.pill{display:inline-block;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700}
+.ok{background:var(--goodBg);color:var(--good)}.need{background:var(--redBg);color:var(--coral)}.mid{background:var(--warnBg);color:var(--warn)}.gr{background:var(--gray);color:#8A90A6}
+.list{margin:0;padding:0;list-style:none}.list li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #F0F1F5}.list li:last-child{border:0}
+.ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800}
+.list b{display:block}.list span{color:var(--muted);font-size:13px}
+.home .tile{cursor:pointer;transition:.15s}.home .tile:hover{border-color:var(--p);transform:translateY(-2px)}
+.tile .n{color:var(--p);font-weight:800;font-size:12px}.tile h4{margin:2px 0 6px;font-size:15px}.tile p{margin:0;font-size:13px;color:var(--sub)}
+.tile .big{font-size:22px;font-weight:800;color:var(--p);margin-top:6px}
+.stage{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.stage .hd{background:var(--gray);padding:12px;text-align:center}.stage .hd b{font-size:17px;display:block}.stage .hd span{font-size:12px;color:var(--muted)}
+.stage.now{border-color:var(--p);background:var(--tint)}.stage.now .hd{background:var(--p);color:#fff}.stage.now .hd span{color:#fff}
+.stage ul{padding:8px 12px}
+.yr{text-align:center;font-size:13px;color:var(--muted);margin-bottom:6px}
+.pager{display:flex;justify-content:space-between;margin-top:26px}
+.pager button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 16px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--body)}
+.pager button:hover{border-color:var(--p);color:var(--p)}
+.src{margin-top:14px;color:#9AA0B4;font-size:12px}
+.bar{height:10px;background:#F3F4F8;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;border-radius:5px}
+.steps{display:flex;align-items:flex-start;justify-content:space-between;position:relative;padding:4px 0}
+.steps:before{content:"";position:absolute;left:8%;right:8%;top:38px;height:10px;background:linear-gradient(90deg,var(--mint) 0 40%,#EDEFF4 40%)}
+.step{position:relative;text-align:center;width:24%}
+.step .c{width:76px;height:76px;border-radius:50%;background:#fff;margin:0 auto 8px;display:grid;place-items:center;font-size:26px;font-weight:800}
+.qs{columns:2;gap:28px;margin:0;padding-left:20px}.qs li{margin-bottom:8px;break-inside:avoid}
+.road .hd{color:#fff;font-weight:700;padding:10px 14px;border-radius:10px 10px 0 0;margin:-16px -18px 10px}
+@media (max-width:1000px){
+  .app{grid-template-columns:1fr;background:var(--bg)}
+  nav{position:static;height:auto;display:flex;overflow-x:auto;gap:4px;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line)}
+  .brand,.navfoot{display:none}
+  #navlist{display:flex;gap:4px}nav button{flex:none;width:auto;white-space:nowrap}
+  main{padding:18px 16px 40px}
+  .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g64,.g46{grid-template-columns:1fr}
+}
+@media (max-width:1000px){.stairs>div{margin-top:0!important}}
+@media (max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}.hook{font-size:17px}.top h2{font-size:21px}.qs{columns:1}}
+@media print{nav,.pager{display:none}.app{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<nav id="nav">
+  <div class="brand"><div class="logo">청호</div><div><h1>(주)청호솔루션</h1><small>경영진단 미팅 대시보드 · 2026-11-06</small></div></div>
+  <div id="navlist"></div>
+  <div class="navfoot">← → 키로 이동 · 0 키로 전체 보기<br>출처: KoDATA 기업종합보고서, 씨오리포트(2026.11.06). 실행 시 전문가 검토가 필요한 참고자료입니다.</div>
+</nav>
+<main id="main"></main>
+</div>
+<script>
+const C={p:'#5B63F6',p15:'#8A91FA',p2:'#AEB8FF',p3:'#E3E8FF',g3:'#B7BCCB',coral:'#E8613F',bad:'#D9483B',good:'#1F9D5C',mint:'#C9EBD7',muted:'#6B7088',ink:'#1E2235',line:'#E2E5EE'};
+const esc=s=>String(s);
+const fmt=(v,d=1)=>Number(v).toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+// ---------- SVG chart helpers ----------
+function colChart(labels,vals,{colors,unit='',dec=1,h=240,min}={}){
+  const W=520,H=h,pb=28,pt=24,mx=Math.max(...vals,0),mn=Math.min(min??0,...vals);
+  const rng=mx-mn||1,bw=W/labels.length,y=v=>pt+(mx-v)/rng*(H-pb-pt),y0=y(0);
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+  labels.forEach((l,i)=>{const v=vals[i],x=i*bw+bw*.22,w=bw*.56,top=Math.min(y(v),y0),hh=Math.max(2,Math.abs(y(v)-y0));
+    const c=Array.isArray(colors)?colors[i]:(colors||C.p);
+    s+=`<rect x="${x}" y="${top}" width="${w}" height="${hh}" rx="4" fill="${c}"/>`;
+    s+=`<text x="${x+w/2}" y="${v<0?top+hh+15:top-7}" text-anchor="middle" font-size="14" font-weight="700" fill="${C.ink}">${fmt(v,dec)}${unit}</text>`;
+    s+=`<text x="${x+w/2}" y="${H-8}" text-anchor="middle" font-size="13" fill="${C.muted}">${l}</text>`;});
+  return s+`<line x1="0" x2="${W}" y1="${y0}" y2="${y0}" stroke="${C.line}"/></svg>`;
+}
+function groupChart(labels,series,{h=240,dec=1,unit=''}={}){
+  const W=520,H=h,pb=48,pt=22,mx=Math.max(...series.flatMap(s=>s[1]));
+  const gw=W/labels.length,n=series.length,bw=gw*.7/n,y=v=>pt+(mx-v)/mx*(H-pb-pt);
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+  labels.forEach((l,i)=>{series.forEach(([nm,vs,c],k)=>{const x=i*gw+gw*.15+k*bw,v=vs[i];
+    s+=`<rect x="${x+2}" y="${y(v)}" width="${bw-4}" height="${Math.max(2,H-pb-y(v))}" rx="3" fill="${c}"/><text x="${x+bw/2}" y="${y(v)-6}" text-anchor="middle" font-size="13" font-weight="700" fill="${C.ink}">${fmt(v,dec)}${unit}</text>`;});
+    s+=`<text x="${i*gw+gw/2}" y="${H-28}" text-anchor="middle" font-size="13" fill="${C.muted}">${l}</text>`;});
+  s+=`<line x1="0" x2="${W}" y1="${H-pb}" y2="${H-pb}" stroke="${C.line}"/>`;
+  return s+legend(series,W,H)+'</svg>';
+}
+function legend(series,W,H){let x=W/2-series.length*55,s='';series.forEach(([nm,,c])=>{s+=`<rect x="${x}" y="${H-14}" width="10" height="10" rx="2" fill="${c}"/><text x="${x+15}" y="${H-5}" font-size="12.5" fill="${C.muted}">${nm}</text>`;x+=nm.length*13+40;});return s;}
+function lineChart(labels,series,{h=260,dec=1,unit='',min,max,labelsOn=true,axis=false}={}){
+  const W=520,H=h,pl=axis?40:16,pr=16,pb=series.length>1?48:28,pt=24;
+  const all=series.flatMap(s=>s[1]),mx=max??Math.max(...all),mn=min??Math.min(0,...all);
+  const x=i=>pl+i*(W-pl-pr)/(labels.length-1),y=v=>pt+(mx-v)/(mx-mn)*(H-pb-pt);
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+  if(axis){for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4;s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="#F0F1F5"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="${C.muted}">${Math.round(v)}</text>`;}}
+  series.forEach(([nm,vs,c])=>{s+=`<polyline fill="none" stroke="${c}" stroke-width="3" points="${vs.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`;
+    vs.forEach((v,i)=>{s+=`<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="#fff" stroke="${c}" stroke-width="2.5"/>`;if(labelsOn)s+=`<text x="${x(i)}" y="${y(v)-10}" text-anchor="middle" font-size="12.5" font-weight="700" fill="${C.ink}">${fmt(v,dec)}${unit}</text>`;});});
+  labels.forEach((l,i)=>s+=`<text x="${x(i)}" y="${H-pb+20}" text-anchor="middle" font-size="12.5" fill="${C.muted}">${l}</text>`);
+  if(series.length>1)s+=legend(series,W,H);
+  return s+'</svg>';
+}
+function hbar(labels,vals,colors,{unit='',dec=1,max}={}){
+  const mx=max??Math.max(...vals);
+  return '<div style="display:grid;gap:12px">'+labels.map((l,i)=>`<div style="display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:10px;font-size:13.5px"><span>${l}</span><div class="bar" style="height:22px;border-radius:6px"><i style="width:${vals[i]/mx*100}%;background:${colors[i]};border-radius:6px"></i></div><b>${fmt(vals[i],dec)}${unit}</b></div>`).join('')+'</div>';
+}
+function donut(vals,colors,center,sub){
+  let a=-Math.PI/2,s='<svg class="chart" viewBox="0 0 200 200" style="max-width:200px;margin:auto">';const t=vals.reduce((x,y)=>x+y);
+  vals.forEach((v,i)=>{const b=a+v/t*2*Math.PI,r=80,ri=54,l=b-a>Math.PI?1:0;
+    const p=(ang,rr)=>`${100+rr*Math.cos(ang)},${100+rr*Math.sin(ang)}`;
+    s+=`<path d="M${p(a,r)} A${r},${r} 0 ${l} 1 ${p(b,r)} L${p(b,ri)} A${ri},${ri} 0 ${l} 0 ${p(a,ri)}Z" fill="${colors[i]}" stroke="#fff" stroke-width="2"/>`;a=b;});
+  return s+`<text x="100" y="102" text-anchor="middle" font-size="24" font-weight="800" fill="${C.ink}">${center}</text><text x="100" y="122" text-anchor="middle" font-size="11" fill="${C.muted}">${sub}</text></svg>`;
+}
+const kpi=(v,u,l,s,c='var(--p)')=>`<div class="card kpi"><div class="v" style="color:${c}">${v}<small>${u}</small></div><div class="l">${l}</div><div class="s">${s}</div></div>`;
+const side=items=>`<div class="side grid g${Math.min(items.length,3)}">`+items.map(([h,p])=>`<div class="card soft"><h4>${h}</h4><p>${p}</p></div>`).join('')+'</div>';
+const icon={ok:['✓','ok'],need:['!','need'],cur:['●','hl'],nxt:['→','gr'],mid:['△','mid']};
+const li=(k,a,b)=>`<li><span class="ic ${icon[k][1]==='hl'?'':icon[k][1]}" style="${k==='cur'?'border:2px solid var(--p);color:var(--p);font-size:8px':''}">${icon[k][0]}</span><div><b>${a}</b><span>${b}</span></div></li>`;
+
+// ---------- sections ----------
+const S=[
+{t:'핵심 요약',sec:'핵심 요약',who:['대표','담당자'],sum:'매출은 업계 상위 25%, 순이익은 평균의 3분의 1',big:'11.2억 가치',src:'KoDATA 기업종합보고서, 씨오리포트(2026.11.06)',
+ hook:'"매출은 업계 상위 25%인데, 남는 돈은 평균의 <span class="hl">3분의 1</span>입니다."',
+ body:()=>`<p class="note" style="margin:-4px 0 16px">2025년 매출 45.6억원은 동종업계 상위 25% 기준(42.3억)을 넘지만, 당기순이익 0.5억원은 업계 평균(1.39억)의 36% 수준입니다. 버는 힘은 약해졌고 현금은 바닥인데, 이익잉여금과 기업가치는 계속 쌓이고 있습니다. <b>지금이 보상·배당·지분 구조를 손볼 가장 싼 시점</b>입니다.</p>
+ <div class="grid g3">${kpi('11.2','억원','현재 기업가치','1주당 1,303원 · 상증세법 보충적 평가')}${kpi('9.7','억원','쌓여만 있는 이익잉여금','설립 13년간 배당 0원')}${kpi('1,918','만원','통장 잔고 (현금성자산)','2년 전 2.8억 → -93%','var(--bad)')}
+ ${kpi('63','%','영업이익 중 이자로 나간 몫','이자 0.83억 ÷ 영업이익 1.32억','var(--bad)')}${kpi('45.4','억원','배당·퇴직금 플랜 시 가치 절감','대표 퇴직 시점(18년 후) 기준','var(--good)')}${kpi('30.7','억원','CEO 유고 시 비상자금 부족액','부채상환+필수운영자금 기준','var(--bad)')}</div>
+ <div class="grid g2" style="margin-top:16px"><div class="card tint"><h3 class="hl">대표님께 드릴 한 줄</h3><p style="margin:0;font-size:15.5px">"회사에 쌓인 9.7억, 대표님 개인 자산으로 옮기는 설계가 없으면 <b>세금만 커집니다</b>. 퇴직금으로 받으면 세율 9.7%, 급여로 받으면 42.7%입니다."</p></div>
+ <div class="card soft"><h3 class="hl">담당자 확인 요청 3가지</h3><ol style="margin:0;padding-left:20px;font-size:15px"><li>정관·임원퇴직금지급규정 보유 여부</li><li>가지급금(단기대여금 0.3억) 발생 사유</li><li>취업규칙 노동청 신고 여부 (상시 22명)</li></ol></div></div>`},
+{t:'라이프 사이클별 경영이슈',sec:'기업 라이프사이클',who:['대표'],sum:'경영 13.3년차, 성숙기: 이익을 꺼내고 넘길 단계',big:'성숙기',src:'씨오리포트 기업 라이프 사이클별 경영이슈, KoDATA',
+ hook:'경영 13.3년차, 쌓는 단계는 지났습니다. 이제는 <span class="hl">잉여금을 꺼내고 넘기는</span> 성숙기입니다',
+ body:()=>{const st=[['3년 미만','창업기','성장을 위한 준비 단계','',[['ok','법인설립','2013.08 신규설립'],['ok','기업부설연구소','2016.09 설치 · 3명'],['need','정관·임원 규정','보수·퇴직금 규정 보유 확인'],['need','노무 기본서류','상시 22명 · 취업규칙 의무']]],
+  ['3~10년','성장기','본격성장을 위한 시스템 구축','',[['ok','특허·상표권 등록','특허 21·디자인 8·상표 3'],['need','벤처·이노비즈·메인비즈','3종 모두 미인증'],['need','배당정책','잉여금 9.7억 · 배당 0원'],['need','CEO 보장 자산','비상자금 30.7억 부족']]],
+  ['10~15년 ▼ 청호 13.3년차','성숙기','잉여금 활용 및 지속성장 검토','now',[['cur','적정보수 책정','임원 6명 급여 합계 연 5,150만원'],['cur','예상 퇴직금·준비재원','2044년 8.9억 · 현금 0.19억'],['cur','자기주식 취득·이익소각','적합 요건 4개 중 3개 충족'],['cur','배당 최적화 플랜','연 2억 배당 시 가치 -45.4억'],['cur','가지급금 정리','단기대여금 0.3억'],['cur','상속·증여 사전검토','지분 10% 증여세 602만원']]],
+  ['15년 이상 · 1.7년 후','정리기/재성장','성공적인 Exit 또는 가업승계','',[['nxt','가업승계 유형 검토','승계 vs 매각 결정'],['nxt','승계 재원 마련','20년 뒤 기업가치 201억'],['nxt','신사업 R&D 투자','경상개발비 2.1억(4.7%)']]]];
+  return `<div class="grid g4 stairs" style="align-items:end">${st.map(([y,n,s,k,items],i)=>`<div style="margin-top:${[90,60,0,30][i]}px"><div class="yr" style="${k?'color:var(--p);font-weight:700':''}">${y}</div><div class="stage ${k}"><div class="hd"><b>${n}</b><span>${s}</span></div><ul class="list">${items.map(a=>li(...a)).join('')}</ul></div></div>`).join('')}</div>
+  <div class="grid g64" style="margin-top:16px"><div class="card soft"><h3>청호솔루션 점검 결과</h3><div class="grid g3" style="text-align:center">${[['3','✓ 갖춘 것','var(--good)'],['5','! 이전 단계에서 남은 숙제','var(--coral)'],['6','● 지금 단계 핵심 과제','var(--p)']].map(([n,l,c])=>`<div class="card"><div style="font-size:40px;font-weight:800;color:${c}">${n}</div><b style="color:${c};font-size:13.5px">${l}</b></div>`).join('')}</div><div style="display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;margin:16px 0 8px"><i style="flex:3;background:var(--good)"></i><i style="flex:5;background:var(--coral)"></i><i style="flex:6;background:var(--p)"></i></div><p class="note" style="margin:0">→ 창업기·성장기에서 남은 숙제(규정·노무·인증·배당·CEO 보장)를 정리하면서, 성숙기 과제인 <b>보수·퇴직금·자기주식·배당 설계</b>를 함께 시작해야 합니다.</p></div>
+  <div class="card"><h3>성숙기 신호 <small>(억원)</small></h3>${groupChart(['2023','2024','2025'],[['이익잉여금',[8.65,9.20,9.70],C.p],['현금성자산',[2.80,0.39,0.19],C.coral]],{h:200})}<p class="note" style="margin:6px 0 0">잉여금은 쌓이는데 현금은 말라 가는 전형적인 성숙기 패턴입니다.</p></div></div>`}},
+{t:'기업 스냅샷',sec:'기업 개요',who:['대표','담당자'],sum:'특허 21건·연구소 보유, 인증은 아직 없음',big:'대표+친족 81.4%',src:'KoDATA, 법인등기부, KIPRIS',
+ hook:'특허 21건·연구소까지 갖췄는데, <span class="hl">인증은 한 장도 없는</span> 회사',
+ body:()=>`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${[['설립','2013.08.21','경영 13.3년 · 성숙기'],['업종','속도계·적산계기','C27214 · 수도계량기'],['인력','상시 22명','종업원 29명 (연구소 3명)'],['사업장','천안 · 임차','126평 · 월세 150만원'],['업계 순위','719위','동종업계 매출(2025)'],['신용 이력','깨끗함','연체·공공·회생 없음']].map(([a,b,c])=>`<div class="card tint"><div class="mut">${a}</div><div style="font-size:17px;font-weight:700">${b}</div><div class="mut">${c}</div></div>`).join('')}</div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h3>지분 구조 <small>(2026.06 기준)</small></h3><div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center">${donut([57.0,18.6,18.6,5.8],[C.p,C.p15,C.p2,C.p3],'81.4%','대표+친족 지분')}
+ <div>${[['조철현 (대표)','57.0%',C.p],['조미예 (친족·임원)','18.6%',C.p15],['윤진녕 (타인·임원)','18.6%',C.p2],['배미숙 (친족·임원)','5.8%',C.p3]].map(([n,v,c])=>`<div style="display:flex;gap:8px;align-items:center;margin:6px 0"><i style="width:12px;height:12px;border-radius:3px;background:${c}"></i>${n} <b>${v}</b></div>`).join('')}</div></div><p class="note">→ 친족 주주(24.4%) 구성은 <b>신이익소각</b>의 "가족 주주" 요건을 충족합니다.</p></div>
+ <div class="card"><h3>기술 자산 & 인증 현황</h3><div class="grid g3">${[['21','특허'],['8','디자인'],['3','상표']].map(([v,l])=>`<div class="card tint" style="text-align:center"><div style="font-size:28px;font-weight:800;color:var(--p)">${v}<small style="font-size:14px">건</small></div><div class="mut">${l}</div></div>`).join('')}</div>
+ <div style="display:flex;flex-wrap:wrap;gap:6px;margin:14px 0"><span class="pill ok">✓ 기업부설연구소</span><span class="pill ok">✓ 병역특례업체</span><span class="pill gr">– 벤처기업</span><span class="pill gr">– 이노비즈</span><span class="pill gr">– 메인비즈</span></div>
+ <p class="note">→ 특허·연구소 보유로 <b>벤처·이노비즈 요건</b>에 근접. 최근 1년 나라장터 1건 낙찰(2.5억).</p></div></div>
+ ${side([['주요 거래처','<b>매입</b> 다산카이스 16.4% · 한국아이치 16.1% · 우성피엔에프 5.5%<br><b>매출</b> 효성테크 15.5% · 우성피엔에프 14.2% · 진주시청 수도과 10.5%'],['체크 포인트','최대 매출처 (주)효성테크의 대표자명이 당사 18.6% 주주(윤진녕)와 같습니다. 동일인 여부와 특수관계 거래 조건 확인이 필요합니다.'],['경영진','대표이사 조철현(1983년생) · 2015년 취임 · 동업계 경력 12년 10개월. ※ 특허는 KIPRIS 21건, KoDATA 평가 기준 16건']])}`},
+{t:'실적 흐름',sec:'기업재무분석',who:['대표'],sum:'매출 반토막(-49%), 마진은 개선',big:'45.6억 매출',src:'KoDATA 손익계산서·재무비율, 씨오리포트',
+ hook:'2023년 88.7억 → 2025년 45.6억. 매출은 <span class="hl">반토막(-49%)</span>, 마진은 오히려 <span class="hl">좋아졌습니다</span>',
+ body:()=>`<div class="grid g64"><div class="card"><h3>매출액 추이 <small>(억원)</small></h3>${colChart(['2021','2022','2023','2024','2025'],[48.44,52.93,88.68,51.57,45.59],{colors:[C.p2,C.p2,C.p,C.p2,C.p2]})}<p class="note">2023년 매출 급증(+67.5%) 이후 2년 연속 감소. 2026년 1~3월 매출 7.1억(부가세 신고 기준).</p></div>
+ <div class="card"><h3>수익성 체질 <small>(%)</small></h3>${lineChart(['2023','2024','2025'],[['매출총이익률',[14.68,22.04,21.22],C.p],['EBITDA마진율',[6.15,7.73,9.06],C.coral]],{min:0,max:26,h:280})}</div></div>
+ <div class="grid g4" style="margin-top:16px">${[['영업이익','3.25억 → 1.32억 <span class="red">-59%</span>'],['당기순이익','2.12억 → 0.50억 <span class="red">-76%</span>'],['ROE','17.8% → 3.6%'],['매출원가율','85.3% → 78.8% <span class="grn">개선</span>']].map(([a,b])=>`<div class="card soft" style="text-align:center"><div class="mut"><b>${a}</b></div><div style="font-size:16px">${b}</div></div>`).join('')}</div>
+ ${side([['대표님께 던질 질문','"2023년 88억 매출은 어떤 수주였나요? 그 수준을 다시 만들 수 있는 파이프라인이 있으신가요?"'],['해석 포인트','원가율이 6.5%p 개선되고 EBITDA 마진은 6.2% → 9.1%로 올랐습니다. <span class="hl">물량이 빠졌을 뿐 제품 경쟁력은 유지</span>되고 있다는 신호입니다.'],['영업이익률','2.9% · KoDATA 동업종 평균 1.1%보다 높지만 표준비율 기준(5% 이하 위험)으로는 낮은 수준']])}`},
+{t:'재무 체력 진단',sec:'기업재무분석',who:['대표','담당자'],sum:'16개 지표: 우수 3 · 양호 5 · 위험 8',big:'위험 8개',src:'씨오리포트 재무비율 분석(1)(2)',
+ hook:'"버티는 힘"은 충분, <span class="hl">"버는 힘·크는 힘"에는 경고등</span>이 켜졌습니다',
+ body:()=>{const g=[['안정성 — 버티는 힘',[['부채비율','낮을수록 좋음',212.3,92.2,'%','양호',260],['차입금의존도','낮을수록 좋음',49.7,29.6,'%','양호',60],['유동비율','높을수록 좋음',197.4,170.5,'%','우수',220],['이자보상비율','높을수록 좋음',1.6,1.4,'배','양호',3.5]]],['수익성·성장성·활동성 — 버는 힘',[['ROE','표준 10% 이하 위험',3.6,3.4,'%','위험',20],['영업이익률','표준 5% 이하 위험',2.9,3.5,'%','위험',10],['매출액증가율','표준 5% 이하 위험',-11.6,4.2,'%','위험',15],['매출채권회전율','현금화 속도',13.3,5.0,'회','우수',15]]]];
+  const cls={우수:'ok',양호:'mid',위험:'need'},mk={우수:'▲ ',양호:'● ',위험:'▼ '};
+  return `<div class="grid g2">${g.map(([t,rows])=>`<div class="card"><h3>${t}</h3>${rows.map(([n,note,me,ind,u,v,mx])=>`<div style="display:grid;grid-template-columns:130px 1fr 70px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #F0F1F5"><div><b>${n}</b><div class="mut">${note}</div></div><div style="display:grid;gap:5px;font-size:12.5px">${[['당사',me,me<0?C.coral:C.p],['업종',ind,'#C3C8D6']].map(([l,val,c])=>`<div style="display:grid;grid-template-columns:30px 1fr 56px;gap:6px;align-items:center"><span class="mut">${l}</span><div class="bar"><i style="width:${Math.max(3,Math.min(1,Math.abs(val)/mx)*100)}%;background:${c}"></i></div><b>${val}${u}</b></div>`).join('')}</div><span class="pill ${cls[v]}" style="text-align:center">${mk[v]}${v}</span></div>`).join('')}</div>`).join('')}</div>
+  <div class="card soft" style="margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center"><div style="display:flex;gap:22px;text-align:center">${[['3','우수','var(--good)'],['5','양호','var(--warn)'],['8','위험','var(--bad)']].map(([n,l,c])=>`<div><div style="font-size:30px;font-weight:800;color:${c}">${n}</div><div class="mut">${l}</div></div>`).join('')}</div><div><div style="display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px"><i style="flex:3;background:var(--good)"></i><i style="flex:5;background:var(--warn)"></i><i style="flex:8;background:var(--bad)"></i></div><div class="mut" style="margin-top:6px">16개 재무비율 평가 결과 (업종평균·표준비율 기준)</div></div></div>
+  ${side([['영역별 결과','<span class="grn">안정성</span> 우수 1 · 양호 3<br><span class="red">수익성</span> 위험 4 (순이익률·영업이익률·ROA·ROE)<br><span class="red">성장성</span> 위험 4 (총자산·자기자본·유동자산·매출)<br><span class="grn">활동성</span> 우수 2 · 양호 2'],['미팅 멘트','"회사가 쓰러질 걱정은 없습니다. 다만 수익성과 성장성 8개 지표가 모두 경고 구간이라, <span class="hl">이익을 어떻게 키우고 어떻게 가져갈지</span>를 같이 설계해야 합니다."'],['업종평균 기준','C27 의료·정밀·광학기기 및 시계 · 한국은행 「2024년 기업경영분석지표」']])}`}},
+{t:'현금·차입 경보',sec:'기업재무분석',who:['대표','담당자'],sum:'현금 1,918만원, 이자가 영업이익의 63%',big:'현금 -93%',src:'KoDATA 현금흐름분석·재무상태표·재무비율, 씨오리포트',
+ hook:'통장에 남은 돈 <span class="hl">1,918만원</span> — 한 달 매출(3.8억)의 <span class="hl">5%</span>입니다',
+ body:()=>`<div class="grid g3">${[['현금성 자산',[2.80,0.39,0.19],[C.p2,C.p2,C.bad],'2년 새 <span class="red">-93%</span> · 현금비율 27.2% → 2.4%'],['경상활동 후 현금흐름',[11.35,4.47,0.19],[C.p2,C.p2,C.bad],'이익은 났지만 현금은 남지 않는 구조'],['투자활동 후 현금흐름',[8.53,0.05,-3.00],[C.p2,C.p2,C.coral],'2025년 설비·SW 투자로 <span class="red">-3억</span> 순유출']].map(([t,v,c,n],i)=>`<div class="card"><h3>${t} <small>(억원)</small></h3>${colChart(['2023','2024','2025'],v,{colors:c,dec:2,min:i===2?-4.5:0,h:220})}<p class="note">${n}</p></div>`).join('')}</div>
+ <div class="grid g2" style="margin-top:16px"><div class="card warmbg"><h3 class="red">이자 부담 구조</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:22px;font-weight:800"><span>1.32억<div class="mut" style="font-weight:400">영업이익</div></span>→<span class="red">0.83억<div class="mut" style="font-weight:400">이자비용</div></span>=<span class="red">63%<div class="mut" style="font-weight:400">이자로 나간 비율</div></span></div><p class="note">장기차입금 21.7억 (차입금의존도 49.7%) · 평균이자율 4.06% · 이자보상배수 1.59배</p></div>
+ <div class="card soft"><h3 class="hl">자산의 절반이 "눈에 안 보이는 자산"</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:22px;font-weight:800"><span>20.6억<div class="mut" style="font-weight:400">무형자산</div></span>/<span>43.7억<div class="mut" style="font-weight:400">총자산</div></span>=<span class="hl">47%</span></div><p class="note">이 중 개발비 16.1억(총자산의 37%). 상각·손상 시 자본이 바로 줄어드는 구조라 금융기관 평가에서 불리합니다.</p></div></div>
+ ${side([['왜 중요한가','이익이 장부상으로만 쌓이고 현금이 없으면, 배당·퇴직금·세금 납부 시점에 <span class="hl">결국 차입으로 메워야</span> 합니다.'],['CEO 유고 리스크','최근 결산 기준 부채상환자금과 필수운영자금을 합한 <span class="hl">비상운영자금이 30.7억원 부족</span>합니다.'],['담당자 확인','차입 상세(정책자금/시설자금 여부, 만기) · 2025년 SW·설비 투자 내역 · 주채권은행: 하나은행']])}`},
+{t:'비용 구조',sec:'기업재무분석',who:['담당자'],sum:'1인당 매출 2.86억 → 1.20억',big:'1.20억/인',src:'KoDATA 손익계산서·제조원가명세서·재무비율',
+ hook:'1인당 매출 <span class="hl">2.86억 → 1.20억</span>. 사람은 2년 새 23% 늘었는데 매출은 줄었습니다',
+ body:()=>`<div class="grid g2"><div class="card"><h3>주요 경비율 <small>(매출원가+인건비+임차료)/매출, %</small></h3>${lineChart(['2023','2024','2025'],[['주요 경비율',[91.6,89.0,87.7],C.p]],{min:80,max:95,h:220})}<p class="note">경비율은 꾸준히 낮아지는 중 → 원가관리는 잘 되고 있음</p></div>
+ <div class="card"><h3>종업원 1인당 매출액 <small>(억원)</small></h3>${colChart(['2023','2024','2025'],[2.86,1.52,1.20],{colors:[C.p2,C.p2,C.p],dec:2,h:220})}<p class="note">1인당 부가가치 4,325만원 · 1인당 영업이익 347만원</p></div></div>
+ <div class="card" style="margin-top:16px"><h3>2025년 매출 100원은 어디로 갔나 <small>(%)</small></h3><div style="display:flex;height:44px;border-radius:8px;overflow:hidden;font-size:13px;font-weight:700">${[['원재료비',45.7,C.p,'#fff'],['노무비(제조)',12.0,C.p15,'#fff'],['제조경비',21.2,C.p2,C.ink],['판관비',18.3,C.p3,C.ink],['영업이익',2.9,C.mint,C.ink]].map(([n,v,c,tc])=>`<div style="flex:${v};background:${c};color:${tc};display:grid;place-items:center" title="${n} ${v}%">${v>5?v+'%':''}</div>`).join('')}</div>
+ <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:8px" class="mut">${[['원재료비 45.7%',C.p],['노무비(제조) 12.0%',C.p15],['제조경비 21.2%',C.p2],['판관비 18.3%',C.p3],['영업이익 2.9%',C.mint]].map(([n,c])=>`<span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${c};margin-right:5px"></i>${n}</span>`).join('')}</div></div>
+ ${side([['인건비 체크','판관비 인건비 3.9억(매출의 8.6%) + 제조 노무비 5.5억. 제조 노무비/매출은 2.9% → 12.0%로 상승.'],['연구개발','경상개발비 2.1억 · 매출 대비 R&D 4.7% → <span class="hl">연구소 세액공제</span> 적용·사후관리 서류 확인 필요'],['임차 사업장','공장 건물을 천광산업(주)에서 임차 중 (보증금 1천만원, 월 150만원). 자가 공장 검토 여지.']])}`},
+{t:'기업가치 미래 시뮬레이션',sec:'기업가치평가',who:['대표'],sum:'지금 11.2억 → 20년 뒤 201억',big:'1주 1,303원',src:'씨오리포트 비상장주식 가치평가·미래 기업가치 시뮬레이션 (약식 추정치)',
+ hook:'지금 <span class="hl">11.2억</span>인 회사, 20년 뒤 <span class="hl">201억</span>. 주식 이동은 <span class="hl">오늘이 가장 쌉니다</span>',
+ body:()=>`<div class="grid g64"><div class="card"><h3>미래 기업가치 시뮬레이션 <small>(억원 · 업종평균 성장률 13.8%·순이익률 3.3% 가정)</small></h3>${lineChart(['2025','2026','2027','2029','2031','2036','2041','2046'],[['기업가치',[11.21,12.97,16.83,22.91,29.48,55.69,105.71,201.18],C.p]],{max:230,h:260})}</div>
+ <div class="card"><h3>현재 1주당 가치</h3><div style="text-align:center;font-size:40px;font-weight:800;color:var(--p)">1,303<small style="font-size:18px">원</small></div><div class="mut" style="text-align:center;margin-bottom:10px">액면가 500원의 2.6배</div><table><tr><th>주주</th><th>지분</th><th>지분가치</th></tr><tr><td>조철현</td><td>57.0%</td><td><b>6.4억</b></td></tr><tr><td>조미예</td><td>18.6%</td><td>2.1억</td></tr><tr><td>윤진녕</td><td>18.6%</td><td>2.1억</td></tr><tr><td>배미숙</td><td>5.8%</td><td>0.6억</td></tr></table></div></div>
+ <div class="grid g64" style="margin-top:16px"><div class="card"><h3>성년 자녀에게 지분 10% 증여 시 증여세 <small>(만원)</small></h3>${colChart(['2025','2026','2027','2029','2031','2036'],[602,773,1325,2505,3779,8932],{colors:[C.good,C.p2,C.p2,C.p2,C.p2,C.p2],dec:0,h:240})}</div>
+ <div class="card tint"><h3 class="hl">같은 10%, 시점만 다를 뿐</h3><div style="font-size:26px;font-weight:800">602만원 <small class="mut" style="font-size:13px">2025년</small></div><div style="font-size:26px;font-weight:800;color:var(--bad)">8,932만원 <small class="mut" style="font-size:13px">2036년</small></div><p>10년 기다리면 증여세가 <b>약 15배</b>. 양도 시에도 1,341만원 → 1.16억원으로 늘어납니다.</p></div></div>
+ ${side([['평가 방식','상증세법 보충적 평가: 순손익가치(915원)×60% + 순자산가치(1,628원)×40% = 1,200원 → 하한(순자산가치 80%) 1,303원 적용'],['왜 지금인가','최근 2년 순이익이 낮아 <span class="hl">순손익가치가 눌려 있는 시점</span>입니다.'],['대주주 기준','비상장 대주주: 지분 4% 이상 또는 10억 이상 → 양도세 20~25%']])}`},
+{t:'배당·퇴직금 플랜 효과',sec:'기업가치평가',who:['대표'],sum:'배당+퇴직금 설계로 기업가치 -45.4억',big:'-45.4억',src:'씨오리포트 배당 및 퇴직금 플랜 적용 시 주식가치 절감 효과',
+ hook:'매년 2억 배당 + 퇴직금 8.9억 설계만으로 <span class="hl">기업가치 45.4억 감소</span> 효과',
+ body:()=>`<div class="grid g64"><div class="card"><h3>플랜 적용 전후 기업가치 추이 <small>(억원)</small></h3>${lineChart(['2026','2029','2033','2036','2040','2044'],[['플랜 적용 전',[13.0,22.9,38.0,55.7,93.0,155.5],C.g3],['배당 플랜',[12.2,19.7,31.6,46.9,81.0,140.3],C.p2],['배당+퇴직금 플랜',[12.2,19.7,31.6,46.9,81.0,110.1],C.p]],{labelsOn:false,axis:true,min:0,max:160,h:300})}</div>
+ <div class="grid"><div class="card"><h3>대표 퇴직 시점(2044년)</h3><div style="font-size:30px;font-weight:800;color:var(--p)">155.5 → 110.1억</div><div class="mut">기업가치 <b>-45.4억원 (-29%)</b></div></div><div class="card"><h3>배당 이력</h3><div style="font-size:30px;font-weight:800;color:var(--bad)">13년 · 0원</div><div class="mut">미처분이익잉여금 9.7억 → 배당·자기주식 취득 재원</div></div></div></div>
+ <div class="grid g4" style="margin-top:16px">${[['정관 정비','중간배당·현물배당·차등배당 조항'],['연 2억 중간배당','잉여금 증가 속도 조절, 가족 주주 소득 분산'],['임원퇴직금 규정','퇴직금 8.9억을 비용 인정 → 순자산 감소'],['매년 재평가','주가·세금 증가 속도를 정기 점검']].map(([a,b],i)=>`<div class="card tint"><b><span class="hl">${i+1}</span> ${a}</b><div class="note">${b}</div></div>`).join('')}</div>
+ ${side([['가정','매년 2억원 중간배당 · 2044년(18년 후) 퇴직, 연평균급여 1억원, 지급배수 3배 → 8.88억원'],['유의','현재 현금이 0.19억뿐이라 <span class="hl">배당 재원은 현금흐름 개선이 선행</span>돼야 합니다. 첫해는 배당 규모를 줄여 시작하는 단계적 설계를 권합니다.']])}`},
+{t:'CEO 보상 설계',sec:'임원소득보상플랜',who:['대표'],sum:'같은 6.38억, 급여면 세금 2.73억 / 퇴직금이면 0.62억',big:'세율 9.7%',src:'씨오리포트 임원소득보상플랜 (법인세율 11% 가정)',
+ hook:'똑같은 <span class="hl">6.38억</span>을 받아도 — 급여면 세금 2.73억, <span class="hl">퇴직금이면 0.62억</span>',
+ body:()=>`<div class="grid g2"><div class="card"><h3>소득 6.38억원 수령 방법별 세금 <small>(억원 · 4대보험 포함)</small></h3>${hbar(['급여 (42.7%)','배당 (40.0%)','퇴직금 (9.7%)'],[2.73,2.55,0.62],[C.g3,C.p2,C.p],{unit:'억',dec:2,max:3})}<p class="note">퇴직금 대비 추가 세금: 급여 <b>+2.11억</b> · 배당 <b>+1.93억</b></p></div>
+ <div class="card"><h3>대표 예상 퇴직금 <small>(2044년, 18년 후)</small></h3><div class="grid g2">${[['임원퇴직금 규정 적용 (3배수)','8.9억','세후 7.4억 · 부담률 16.7%'],['세법상 퇴직소득 한도 맞춤','6.4억','세후 5.8억 · 부담률 9.7%']].map(([a,b,c])=>`<div class="card tint"><div class="mut">${a}</div><div style="font-size:30px;font-weight:800;color:var(--p)">${b}</div><div class="mut">${c}</div></div>`).join('')}</div><p class="note">8.88억 중 한도 초과 2.50억은 <b>근로소득(실효 34.5%)</b>으로 과세 → 지급배수와 급여 수준을 함께 설계해야 합니다.</p></div></div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h3>급여 인상 시 실질 세부담 <small>(법인세 절감 반영)</small></h3><table><tr><th>연봉</th><th>개인 실효세율</th><th>개인+법인 총 실효세율</th></tr>${[['6,000만','16.6%','13.5%'],['1억','21.9%','17.8%'],['1.2억','24.3%','19.7%'],['1.5억','28.0%','22.9%']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td><b>${r[2]}</b></td></tr>`).join('')}</table></div>
+ <div class="card tint"><h3 class="hl">급여 + 배당 믹스</h3><p style="font-size:15.5px;margin:0">연봉 1억을 <b>급여 8천만 + 배당 2천만</b>으로 나누면<br>개인 실효세율 21.9% → <b>19.1%</b><br>총 실효세율 17.8% → <b>16.5%</b></p><p class="mut">배당은 법인 비용 처리가 안 되므로 금융소득 2천만원 이하로 설계합니다.</p></div></div>
+ ${side([['현재 상태','2025년 임원급여 합계 <span class="hl">5,150만원</span> (임원 6명 등기). 지금 급여 수준으로는 충분한 퇴직금을 만들기 어렵습니다.'],['임원퇴직금지급규정','규정이 없으면 "1년 총급여×1/10×근속연수"까지만 손금 인정. 규정 제정·주총 결의가 출발점입니다.'],['퇴직금 재원','현금 0.19억 상황에서 8.9억 지급은 불가능 → <span class="hl">퇴직금 재원 적립 수단</span>을 지금부터 준비해야 합니다.']])}`},
+{t:'자기주식·이익소각',sec:'자기주식 활용 솔루션',who:['대표'],sum:'신이익소각 요건 4개 중 3개 충족',big:'3 / 4',src:'씨오리포트 자기주식 활용 솔루션·주식이동 유형별 세금',
+ hook:'신이익소각 적합 요건 <span class="hl">4개 중 3개 충족</span> — 잉여금 9.7억을 대표 개인 자산으로 옮기는 통로',
+ body:()=>`<div class="grid g2"><div class="card"><h3>신이익소각(액면이익소각) 적합성 체크</h3><ul class="list">${li('ok','가족 주주 구성','조미예·배미숙(친족) 24.4%')}${li('ok','자본금 3억원 이상','4.3억원')}${li('ok','충분한 미처분이익잉여금','9.7억원')}${li('mid','안정적 부채비율','212.3% (업종 92.2%)')}</ul><p class="note">→ 부채비율은 업종 대비 높지만 표준비율(200% 이하 우수, 600% 이상 위험) 기준 "양호" 구간</p></div>
+ <div class="card"><h3>대표 지분 10%(86,000주) 이동 방식별 세금</h3><table><tr><th>방식</th><th>세목</th><th>예상 세금</th></tr>${[['시가증여','증여세','602만원'],['시가양도','양도세','1,464만원'],['자기주식 취득','양도세','1,464만원'],['자기주식 증여','법인세','2,465만원'],['저가양수도','양도세','1,341만원']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td><b>${r[2]}</b></td></tr>`).join('')}</table><p class="mut">지분가치 1.12억원 기준 · 성년자녀 대상 가정</p></div></div>
+ <div class="grid g4" style="margin-top:16px">${[['배우자에게 시가 증여','10년간 6억원까지 증여공제'],['법인이 자기주식 취득','취득가 = 시가 → 양도차익 0'],['이익소각','잉여금 감소 → 주가 안정'],['가지급금 상계 등 활용','현금 이전·부채 정리']].map(([a,b],i)=>`<div class="card tint"><b><span class="hl">${i+1}</span> ${a}</b><div class="note">${b}</div></div>`).join('')}</div>
+ ${side([['자기주식 취득이란','회사가 주주로부터 자기 회사 주식을 사들이는 것. 미처분이익잉여금(배당가능이익) 한도 내에서 가능합니다.'],['실행 전 주의','배우자의 취득대금은 <span class="hl">배우자에게 실질 귀속</span>돼야 함 · 증권거래세 0.35% · 가업승계 증여특례 등 사후관리 기간 내 처분 제한 확인'],['가지급금','재무상태표상 가지급금 0.3억원. 소액이지만 누적 전 정리 권장 (인정이자·상여처분 리스크).']])}`},
+{t:'제도·인증·노무',sec:'기업제도정비 · 노무',who:['담당자'],sum:'청년 채용 1명당 720만원, 노무 컨설팅 무료',big:'720만원',src:'씨오리포트 기업제도정비·노무 컨설팅 (2026년 기준)',
+ hook:'청년 채용 1명당 <span class="hl">720만원</span>, 노무 컨설팅은 <span class="hl">무료</span> — 받을 수 있는 걸 받고 있나요?',
+ body:()=>`<div class="grid g46"><div class="card"><h3>10인 이상 사업장 노무 필수 체크</h3><ul class="list">${[['취업규칙 작성·노동청 신고','10인 이상 의무 · 미신고 500만원 과태료'],['근로계약서 작성·교부','미교부 500만원 벌금'],['임금대장·급여명세서','명세서 미교부 500만원 이하 과태료'],['주 52시간·연차대장','출근기록부·연차미사용수당 정산'],['중대재해처벌법 안전보건 조치','5인 이상 사업장 적용']].map(([a,b])=>`<li><span class="ic" style="border:2px solid var(--p);border-radius:4px"></span><div><b>${a}</b><span>${b}</span></div></li>`).join('')}</ul></div>
+ <div class="card"><h3>신청 가능 정부지원 <small>(상시 22명 · 충남 천안)</small></h3><table><tr><th>제도</th><th>지원 규모</th><th>조건</th></tr>${[['청년일자리 도약장려금(비수도권)','인당 720만원','청년 정규직 채용 · 1년'],['고용촉진장려금','인당 720~1,440만원','취업취약계층 채용'],['육아휴직·근로시간단축 지원금','인당 최대 360만원+α','30일 이상 허용 시'],['푸른씨앗 퇴직연금기금','인당 최대 80.4만원','30인 이하 · 3년'],['안전보건 관리체계 컨설팅','무료','30인 미만 전액 지원'],['유연근무 종합컨설팅','무료','10인 이상']].map(r=>`<tr><td>${r[0]}</td><td><b>${r[1]}</b></td><td class="mut">${r[2]}</td></tr>`).join('')}</table></div></div>
+ ${side([['기업부설연구소 사후관리','연구보고서·연구노트·연구일지·회의록을 <span class="hl">5년간 보관</span>해야 세액공제가 유지됩니다.'],['사내근로복지기금','이익 일부를 출연해 직원 복지 재원으로 운용 · 출연금 손금 처리 가능'],['스톡옵션','핵심 인력 유지용 · 정관 규정 + 주총 특별결의 필요']])}`},
+{t:'기업규정 기본 패키지',sec:'기업제도정비',who:['대표','담당자'],sum:'규정 하나로 비용 인정 퇴직금 3.0억 → 8.9억',big:'+5.9억',src:'씨오리포트 기업규정 기본 패키지·임원퇴직금지급규정·인건비 분석, KoDATA',
+ hook:'임원퇴직금 규정 하나로 비용 인정 퇴직금이 <span class="hl">3.0억 → 8.9억</span>, 3배가 됩니다',
+ body:()=>`<div class="grid g64"><div class="grid g2">${[['정관','회사 조직·활동의 근본 규칙. 임원 보수·퇴직금, 중간배당, 현물배당, 주식 양도 제한, 스톡옵션, 자기주식 이익소각은 <b>정관에 적어야 효력</b>이 생깁니다.','9.7억','배당 없이 쌓인 이익잉여금','중간배당·이익소각 조항 우선 반영','need','개정 검토'],
+ ['임원보상 규정','임원 보수·퇴직금은 주총 결의 또는 정관이 위임한 별도 지급규정으로 정합니다. 보수 한도, 지급배수, 유족보상금을 설계합니다.','8.9억','대표 예상 퇴직금 (3배수·2044년)','규정이 있어야 전액 비용 처리','need','보유 확인'],
+ ['복리후생 규정','임원 복리후생은 직원과 같은 조건이어야 비과세됩니다. 과세 항목은 연간 보수 한도 안에서 지급해야 비용 처리됩니다.','8.2%','인건비 대비 복리후생비 (권장 5~10%)','3.4% → 6.3% → 8.2%, 지급 기준 문서화','ok','수준 적정'],
+ ['취업규칙','10인 이상 사업장의 법정 의무. 근로시간·휴가·임금, 승급·퇴직, 육아휴직, 안전보건, 직장 내 괴롭힘 조치를 담습니다.','22명','상시근로자 → 작성·신고 의무 대상','미신고 시 과태료 최대 500만원','need','신고 확인']].map(([t,d,v,vl,n,st,stl],i)=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:16px"><span class="pill" style="background:var(--p);color:#fff;border-radius:4px">${i+1}</span> ${t}</b><span class="pill ${st}">${stl}</span></div><p class="note" style="margin:0 0 10px">${d}</p><div class="card tint" style="padding:10px 14px"><div class="hl" style="font-size:12px">청호솔루션은</div><div style="font-size:28px;font-weight:800;color:${st==='ok'?'var(--good)':'var(--p)'}">${v}</div><b style="font-size:13px">${vl}</b><div class="mut">→ ${n}</div></div></div>`).join('')}</div>
+ <div class="card"><h3>규정 유무별 비용 인정 퇴직금 <small>(억원)</small></h3>${colChart(['규정 없음','규정 있음(3배수)'],[2.96,8.88],{colors:[C.g3,C.p],dec:2,unit:'억',h:280})}<div class="card tint" style="text-align:center;margin:10px 0"><div style="font-size:32px;font-weight:800;color:var(--p)">+5.9<small style="font-size:15px">억원</small></div><div class="mut">규정으로 추가 비용 인정되는 퇴직금</div></div><p class="mut" style="margin:0">규정 없음: 퇴직 전 1년 총급여 × 1/10 × 근속연수<br>규정 있음: 3년 연평균급여 × 1/10 × 근속연수 × 지급배수<br>※ 씨오리포트 가정(연평균급여 1억, 근속 29.6년) 약식 계산. 퇴직소득 한도 초과분(2.50억)은 근로소득 과세</p></div></div>
+ ${side([['기업규정 정비의 필요성','회사가 성장하고 직원이 많아지면 관리·통제와 <span class="hl">세법상 손금 요건</span>을 갖추기 위해 제 규정을 정비해야 합니다. 청호는 종업원 29명, 등기임원 6명 규모입니다.'],['취업규칙 작성 필수','상시근로자 <span class="hl">22명</span>으로 10인 이상 사업장 → 작성·사내 게시·노동청 신고 의무'],['담당자 확인 요청','현재 정관 사본과 최종 개정일 · 임원 보수·퇴직금 규정의 주총 결의 여부 · 취업규칙 신고필증']])}`},
+{t:'업종별 인증전략',sec:'기업제도정비',who:['대표','담당자'],sum:'인증 5단계 중 2단계 완료, 다음은 벤처 → 이노비즈',big:'2 / 5',src:'KoDATA 기업인증·산업재산권 현황, 씨오리포트 업종별 인증전략·기업부설연구소',
+ hook:'인증 사다리 5칸 중 <span class="hl">2칸</span>만 올랐습니다 — 다음은 <span class="hl">벤처 → 이노비즈</span>',
+ body:()=>`<div class="card soft" style="margin-bottom:16px">업종별·경영 단계별로 인증을 <b>순차적으로 확보</b>하면 세제·우대 혜택은 물론 정부지원사업·정책자금 신청에 유리합니다. 청호솔루션은 수도계량기 <b>제조업(기술제조업)</b>이므로 <span class="hl">이노비즈 경로</span>가 맞습니다.</div>
+ <div class="grid g64"><div class="card"><h3>청호솔루션 인증 프로세스 진행 현황</h3><div class="steps">${[['기업부설연구소','2016.09 설치 · 연구원 3명','ok','완료','✓'],['특허 출원·등록','특허 21 · 디자인 8 · 상표 3','ok','완료','✓'],['벤처 인증','연구소·특허로 요건 근접','need','미인증','3'],['ISO 인증','KoDATA 자료에 기재 없음','gr','확인 필요','4']].map(([n,d,st,stl,ic])=>`<div class="step"><div class="c" style="border:${st==='ok'?'3px solid var(--good);color:var(--good)':st==='need'?'2px solid var(--coral);color:var(--coral)':'2px dashed #9AA0B4;color:#9AA0B4'}">${ic}</div><b style="font-size:14px">${n}</b><div style="margin:5px 0"><span class="pill ${st}">${stl}</span></div><div class="mut">${d}</div></div>`).join('')}</div></div>
+ <div class="card tint"><h3>업종별 다음 단계</h3><div style="display:grid;gap:12px"><div style="display:flex;gap:10px;align-items:center"><span style="background:var(--p);color:#fff;font-weight:700;padding:10px 14px;clip-path:polygon(0 0,85% 0,100% 50%,85% 100%,0 100%);width:150px">기술제조업 (청호)</span><div><b class="hl" style="font-size:17px">이노비즈</b><div class="mut">기술혁신형 · 보증·금리 우대 · 청호 목표 인증</div></div></div>
+ <div style="display:flex;gap:10px;align-items:center;opacity:.6"><span style="background:var(--p3);color:var(--muted);font-weight:700;padding:10px 14px;clip-path:polygon(0 0,85% 0,100% 50%,85% 100%,0 100%);width:150px">서비스/유통</span><div><b style="font-size:17px">메인비즈</b><div class="mut">경영혁신형 · 3년 이상 기업</div></div></div></div></div></div>
+ <div class="grid g46" style="margin-top:16px"><div class="card"><h3>산업재산권 보유 <small>(건)</small></h3>${hbar(['특허','디자인','상표'],[21,8,3],[C.p,C.p15,C.p2],{unit:'건',dec:0,max:25})}<p class="note">합계 <b>32건</b> · 매출 대비 R&D <b>4.7%</b> (경상개발비 2.1억)</p></div>
+ <div class="card" style="border-color:#F2B8A6"><h3>R&D 전략 → 정책자금</h3><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">${[['기업부설연구소',1],['특허 출원·등록',1],['벤처 인증',0],['이노비즈 인증',0]].map(([n,on],i)=>`<span class="pill ${on?'ok':'gr'}" style="padding:8px 12px">${on?'✓':'—'} ${n}</span>${i<3?'<b style="color:var(--coral)">+</b>':''}`).join('')}<b style="color:var(--coral);font-size:20px">➜</b><span class="pill need" style="padding:8px 14px;font-size:14px">정책자금</span></div>
+ <ul class="list">${li('ok','지금 상태','4단계 중 2단계 완료 (연구소·특허)')}${li('need','다음 6개월','벤처 인증 → 이노비즈 신청 준비')}${li('cur','기대 효과','정책자금·보증 우대, 조달 가점 (최근 1년 나라장터 1건 낙찰 2.5억)')}${li('cur','연결 과제','장기차입금 21.7억의 금리 부담 완화 검토')}</ul></div></div>
+ ${side([['산업재산권현황','특허권 <span class="hl">21건</span> · 디자인권 8건 · 상표권 3건 (KoDATA 평가 기준 특허 16건)'],['기업인증현황','<span class="grn">보유</span> 기업부설연구소(2016.09) · 병역특례업체<br><span class="red">미인증</span> 벤처 · 이노비즈 · 메인비즈'],['담당자 확인','ISO 인증 보유 여부 · 최근 3년 특허 출원·등록 목록 · 연구노트·일지 5년 보관 여부']])}`},
+{t:'실행 로드맵 & 미팅 질문',sec:'실행 로드맵',who:['대표','담당자'],sum:'12개 과제를 3단계로 정리',big:'12개 과제',src:'본 자료는 참고자료이며, 세무·법률 판단은 실행 전 전문가 검토가 필요합니다. 미래 기업가치·세금은 가정에 따른 추정치입니다.',
+ hook:'무엇부터 할까 — <span class="hl">12개 과제</span>, 3단계로 정리했습니다',
+ body:()=>`<div class="grid g3 road">${[['즉시 · 1~3개월',C.p,[['정관·임원 규정 정비','중간배당, 임원퇴직금·보수 규정'],['가지급금 0.3억 정리','상환·상계 방안 확정'],['CEO 유고 대비','비상운영자금 30.7억 부족분 대책'],['노무 서류 점검','취업규칙 신고·근로계약서']]],['단기 · 6개월',C.p15,[['고용지원금 신청','청년·육아휴직 지원금'],['인증 취득 착수','벤처 → 이노비즈·메인비즈'],['급여·배당 믹스 설계','대표 연봉 재설계'],['현금흐름 관리','운전자본·차입 구조 점검']]],['중장기 · 1년+',C.p2,[['정기 배당 개시','연 2억 목표, 단계적 확대'],['지분 이동','가치 상승 전 배우자·자녀 이전'],['자기주식 이익소각','잉여금 9.7억 활용'],['퇴직금 재원 적립','2044년 8.9억 목표']]]].map(([t,c,items])=>`<div class="card"><div class="hd" style="background:${c}">${t}</div><ul class="list">${items.map(([a,b])=>`<li><div><b>${a}</b><span>${b}</span></div></li>`).join('')}</ul></div>`).join('')}</div>
+ <div class="card soft" style="margin-top:16px"><h3>미팅에서 대표님께 여쭐 질문</h3><ol class="qs">${['2023년 88억 매출의 원천은 무엇이었고, 재현 가능한가요?','대표님이 은퇴 시 받고 싶은 퇴직금 규모는 얼마인가요?','자녀분께 회사를 물려줄 계획이 있으신가요? (승계 vs 매각)','현재 정관과 임원퇴직금 규정을 갖고 계신가요?','효성테크(윤진녕 대표)와의 거래 관계는 어떻게 되나요?','공장 이전·자가 확보 계획이 있으신가요?'].map(q=>`<li>${q}</li>`).join('')}</ol></div>
+ ${side([['우선순위 기준','① 비용 없이 바로 가능한 것 ② 미루면 세금이 커지는 것 ③ 리스크 노출이 큰 것'],['핵심 메시지','"회사는 튼튼합니다. 다만 쌓인 이익이 대표님 것이 되는 <span class="hl">통로</span>가 없습니다. 그 통로를 만드는 것이 이번 컨설팅의 목표입니다."']])}`},
+];
+
+// ---------- home (overview dashboard) ----------
+function home(){
+  return `<div class="top"><div><div class="sec">경영진단 미팅 대시보드</div><h2>(주)청호솔루션 한눈에 보기</h2></div><div class="chips"><span class="chip">대표</span><span class="chip">담당자</span></div></div>
+  <div class="hook">회사는 튼튼합니다. 다만 쌓인 이익이 대표님 것이 되는 <span class="hl">통로</span>가 없습니다.</div>
+  <div class="grid g4" style="margin-bottom:16px">${kpi('45.6','억원','2025 매출','2023년 88.7억 대비 -49%')}${kpi('11.2','억원','현재 기업가치','20년 뒤 201억 전망')}${kpi('9.7','억원','이익잉여금','13년간 배당 0원')}${kpi('1,918','만원','현금성자산','2년 새 -93%','var(--bad)')}</div>
+  <div class="grid g3 home">${S.map((s,i)=>`<div class="card tile" data-go="${i+1}"><div class="n">${String(i+1).padStart(2,'0')} · ${s.sec}</div><h4>${s.t}</h4><p>${s.sum}</p><div class="big">${s.big}</div></div>`).join('')}</div>
+  <p class="src">출처: KoDATA 기업종합보고서(2026.11.06), 씨오리포트(2026.11.06). 기준 결산 2025.12.31. 카드를 누르면 상세 화면으로 이동합니다.</p>`;
+}
+function page(i){
+  const s=S[i-1];
+  return `<div class="top"><div><div class="sec">${String(i).padStart(2,'0')} · ${s.sec}</div><h2>${s.t}</h2></div><div class="chips">${s.who.map(w=>`<span class="chip">${w}</span>`).join('')}</div></div>
+  <div class="hook">${s.hook}</div>${s.body()}<p class="src">출처: ${s.src}</p>
+  <div class="pager"><button data-go="${i-1}">← ${i>1?S[i-2].t:'전체 보기'}</button>${i<S.length?`<button data-go="${i+1}">${S[i].t} →</button>`:'<button data-go="0">전체 보기 →</button>'}</div>`;
+}
+let cur=0;
+function go(i){
+  cur=Math.max(0,Math.min(S.length,i));
+  document.getElementById('main').innerHTML=cur?page(cur):home();
+  document.querySelectorAll('#navlist button').forEach(b=>b.classList.toggle('on',+b.dataset.go===cur));
+  try{history.replaceState(null,'','#'+cur)}catch(e){}
+  window.scrollTo(0,0);
+}
+document.getElementById('navlist').innerHTML=`<button data-go="0"><span class="n">◎</span>전체 보기</button>`+S.map((s,i)=>`<button data-go="${i+1}"><span class="n">${String(i+1).padStart(2,'0')}</span>${s.t}</button>`).join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(+b.dataset.go)});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);else if(e.key==='ArrowLeft')go(cur-1);else if(e.key==='0'||e.key==='Home')go(0)});
+go(parseInt((location.hash||'#0').slice(1))||0);
+</script>
+
+
+
+
+<!--VOICE:BEGIN-->
+<style>
+/* ---------- 음성 설명 (Web Speech API) ---------- */
+#vx{position:fixed;right:20px;bottom:20px;z-index:50;font-family:inherit}
+#vx .fab{display:flex;align-items:center;gap:8px;border:0;border-radius:28px;background:var(--p,#5B63F6);color:#fff;font:inherit;font-weight:700;font-size:14px;padding:12px 18px;cursor:pointer;box-shadow:0 6px 18px rgba(46,52,140,.28)}
+#vx .fab:hover{filter:brightness(1.07)}
+#vx .fab svg{width:18px;height:18px}
+#vx .panel{display:none;width:340px;background:#fff;border:1px solid var(--line,#E2E5EE);border-radius:14px;box-shadow:0 10px 30px rgba(30,34,53,.18);overflow:hidden}
+#vx.open .panel{display:block}#vx.open .fab{display:none}
+#vx .ph{display:flex;align-items:center;justify-content:space-between;background:var(--p,#5B63F6);color:#fff;padding:10px 14px}
+#vx .ph b{font-size:14px}#vx .ph small{display:block;font-size:11.5px;opacity:.85;font-weight:400}
+#vx .ph button{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px}
+#vx .pb{padding:12px 14px}
+#vx .ctl{display:flex;gap:6px;align-items:center}
+#vx .ctl button{border:1px solid var(--line,#E2E5EE);background:#fff;border-radius:9px;height:40px;min-width:40px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--ink,#1E2235);display:grid;place-items:center;padding:0 10px}
+#vx .ctl button:hover{border-color:var(--p,#5B63F6);color:var(--p,#5B63F6)}
+#vx .ctl .play{flex:1;background:var(--p,#5B63F6);border-color:var(--p,#5B63F6);color:#fff;font-weight:700;display:flex;gap:6px;justify-content:center;align-items:center}
+#vx .ctl .play:hover{color:#fff;filter:brightness(1.07)}
+#vx .ctl svg{width:15px;height:15px}
+#vx .cap{margin:10px 0 8px;min-height:62px;max-height:120px;overflow:auto;background:var(--tint,#F1F4FF);border-radius:10px;padding:9px 11px;font-size:13.5px;line-height:1.55;color:var(--body,#3B3F52)}
+#vx .cap .pg{display:block;font-size:11.5px;color:var(--p,#5B63F6);font-weight:700;margin-bottom:2px}
+#vx .prog{height:4px;background:#EDEFF4;border-radius:2px;overflow:hidden;margin-bottom:10px}#vx .prog i{display:block;height:100%;width:0;background:var(--p,#5B63F6);transition:width .3s}
+#vx .opt{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:12.5px;color:var(--muted,#6B7088)}
+#vx select{font:inherit;font-size:12.5px;border:1px solid var(--line,#E2E5EE);border-radius:7px;padding:4px 6px;background:#fff;color:var(--ink,#1E2235);min-width:0;width:100%}
+#vx label.tg{grid-column:1/-1;display:flex;gap:7px;align-items:center;cursor:pointer;color:var(--body,#3B3F52)}
+#vx .warn{display:none;margin-top:8px;font-size:12px;color:var(--bad,#D9483B);line-height:1.45}
+#vx .keys{margin-top:8px;font-size:11px;color:#9AA0B4}
+#vx.playing .fab{animation:vxp 1.6s infinite}
+@keyframes vxp{50%{box-shadow:0 0 0 8px rgba(91,99,246,.18)}}
+.vx-reading .hook{outline:2px solid var(--p,#5B63F6);outline-offset:3px}
+body.vx-open main{padding-bottom:420px}
+#vx .ph .hb{display:flex;gap:6px}
+#vx .mini{display:none;align-items:center;gap:6px;background:#fff;border:1px solid var(--line,#E2E5EE);border-radius:28px;padding:5px 6px 5px 5px;box-shadow:0 6px 18px rgba(30,34,53,.18);max-width:360px}
+#vx.open.mini .panel{display:none}#vx.open.mini .mini{display:flex}
+#vx .mini button{border:0;border-radius:50%;width:34px;height:34px;flex:none;display:grid;place-items:center;cursor:pointer;background:var(--gray,#F4F5F8);color:var(--ink,#1E2235);font:inherit;font-size:13px}
+#vx .mini button:hover{color:var(--p,#5B63F6)}
+#vx .mini .mp{background:var(--p,#5B63F6);color:#fff}#vx .mini .mp:hover{color:#fff}
+#vx .mini svg{width:14px;height:14px}
+#vx .mini .mt{font-size:12.5px;font-weight:700;color:var(--body,#3B3F52);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;padding:0 4px}
+#vx.playing .mini{box-shadow:0 0 0 4px rgba(91,99,246,.15),0 6px 18px rgba(30,34,53,.18)}
+#vx .zm{display:flex;gap:4px;align-items:center}
+#vx .zm button{border:1px solid var(--line,#E2E5EE);background:#fff;border-radius:7px;height:28px;min-width:28px;padding:0 8px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--ink,#1E2235)}
+#vx .zm button:hover,#vx .zm button.on{border-color:var(--p,#5B63F6);color:var(--p,#5B63F6)}
+#vx .zm b{min-width:42px;text-align:center;font-size:12.5px;color:var(--ink,#1E2235)}
+@media (max-width:640px){#vx .keys{display:none}#vx{right:10px;left:10px;bottom:10px}#vx .panel{width:auto}#vx .fab,#vx .mini{margin-left:auto}}
+@media print{#vx{display:none}}
+</style>
+<div id="vx" aria-live="polite">
+  <button class="fab" id="vxFab" title="음성 설명 열기 (V)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>음성 설명</button>
+  <div class="mini" id="vxMini"><button class="mp" id="vxMPlay" title="재생/일시정지 (Space)"></button><span class="mt" id="vxMTxt">음성 설명</span><button id="vxMFit" title="한 화면에 맞춤 켜기/끄기">⤡</button><button id="vxMStop" title="정지"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button><button id="vxExpand" title="크게 펼치기">⤢</button></div>
+  <div class="panel" role="region" aria-label="음성 설명">
+    <div class="ph"><div><b>음성 설명</b><small id="vxVoiceName">목소리 확인 중…</small></div><div class="hb"><button id="vxMin" title="작게 접기 (재생은 계속)">—</button><button id="vxClose" title="닫기 (재생 정지)">✕</button></div></div>
+    <div class="pb">
+      <div class="ctl">
+        <button id="vxPrev" title="이전 문장">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+        <button class="play" id="vxPlay"></button>
+        <button id="vxNext" title="다음 문장"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+        <button id="vxStop" title="정지"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg></button>
+      </div>
+      <div class="cap" id="vxCap"><span class="pg" id="vxPg"></span><span id="vxTxt">▶ 를 누르면 지금 보고 있는 화면을 설명합니다.</span></div>
+      <div class="prog"><i id="vxBar"></i></div>
+      <div class="opt">
+        <span>목소리</span><div style="display:flex;gap:4px;min-width:0"><select id="vxVoice"></select><button id="vxTry" title="이 목소리로 한 문장 들어 보기" style="flex:none;border:1px solid var(--line,#E2E5EE);background:#fff;border-radius:7px;font:inherit;font-size:12px;padding:0 8px;cursor:pointer;color:var(--p,#5B63F6)">미리 듣기</button></div>
+        <span>톤</span><select id="vxTone"><option value="0.86">차분한 저음 (전문가)</option><option value="1">기본</option><option value="1.12">밝은 톤</option></select>
+        <span>속도</span><select id="vxRate"><option value="0.85">천천히 (0.85)</option><option value="0.95">보통 (0.95)</option><option value="1.05">조금 빠르게 (1.05)</option><option value="1.15">빠르게 (1.15)</option></select>
+        <span>화면 크기</span><div class="zm"><button id="vxZOut" title="화면 축소">−</button><b id="vxZv">100%</b><button id="vxZIn" title="화면 확대">+</button><button id="vxZFit" title="화면 하나가 스크롤 없이 다 보이도록 축소">한 화면에 맞춤</button></div>
+        <label class="tg"><input type="checkbox" id="vxAuto"> 끝나면 다음 화면으로 자동 넘김 (전체 브리핑)</label>
+      </div>
+      <div class="warn" id="vxWarn"></div>
+      <div class="keys">단축키: V 펼치기/접기 · F 한 화면에 맞춤 · Space 재생/일시정지 · Esc 정지 · ←/→ 화면 이동 시 그 화면을 이어서 읽음</div>
+    </div>
+  </div>
+</div>
+<script>
+/* 섹션별 설명 대본. 키 = 화면 번호(0 = 전체 보기). 비어 있으면 화면 제목·후킹 문구를 읽음 */
+const NARR={
+ "0": "청호솔루션 경영진단 결과를 한눈에 정리한 화면입니다. 한 문장으로 말씀드리면, 회사는 튼튼하지만 쌓인 이익이 대표님 것이 되는 통로가 없습니다. 2025년 매출은 45억 6천만 원으로 2023년보다 49퍼센트 줄었습니다. 현재 기업가치는 11억 2천만 원, 이익잉여금은 9억 7천만 원인데 13년 동안 배당은 한 번도 없었습니다. 통장 잔고는 1,918만 원으로 2년 사이 93퍼센트 줄었습니다. 아래 열다섯 개 화면에서 실적, 현금, 기업가치, 보상 설계, 제도 정비까지 차례로 짚어 보겠습니다.",
+ "1": "핵심 요약입니다. 매출은 업계 상위 25퍼센트인데, 남는 돈은 평균의 3분의 1입니다. 2025년 매출 45억 6천만 원은 업계 상위 25퍼센트 기준을 넘지만, 당기순이익 5천만 원은 업계 평균의 36퍼센트 수준입니다. 버는 힘은 약해졌고 현금은 바닥인데, 이익잉여금과 기업가치는 계속 쌓이고 있습니다. 영업이익 가운데 63퍼센트가 이자로 나가고 있고, 대표님 유고 시 비상자금은 30억 7천만 원이 부족합니다. 핵심은 이것입니다. 회사에 쌓인 9억 7천만 원을 퇴직금으로 받으시면 세율이 9.7퍼센트, 급여로 받으시면 42.7퍼센트입니다. 지금이 보상, 배당, 지분 구조를 손볼 가장 싼 시점입니다.",
+ "2": "라이프 사이클별 경영이슈입니다. 청호솔루션은 경영 13년 차를 넘긴 성숙기 기업입니다. 쌓는 단계는 지났고, 이제는 잉여금을 꺼내고 넘기는 단계입니다. 기업부설연구소와 특허 등록 같은 기반은 갖췄습니다. 하지만 정관과 임원 규정, 노무 서류, 벤처와 이노비즈 인증, 배당정책, 대표님 보장 자산은 이전 단계에서 남은 숙제입니다. 지금 단계의 핵심 과제는 적정 보수 책정, 퇴직금과 재원 준비, 자기주식과 이익소각, 배당 최적화, 가지급금 정리, 그리고 상속과 증여 사전 검토입니다.",
+ "3": "기업 스냅샷입니다. 2013년에 설립된 수도계량기 제조사로, 상시 근로자 22명, 천안의 임차 공장에서 운영하고 있습니다. 특허 21건과 기업부설연구소까지 갖췄는데, 벤처, 이노비즈, 메인비즈 인증은 한 장도 없습니다. 지분은 조철현 대표님이 57퍼센트, 친족 임원 두 분이 합쳐 24.4퍼센트, 타인 임원이 18.6퍼센트를 갖고 있습니다. 친족 주주 구성은 신이익소각의 가족 주주 요건을 충족합니다. 한 가지 확인할 점은, 최대 매출처인 효성테크의 대표자 이름이 18.6퍼센트 주주와 같다는 것입니다. 동일인인지, 특수관계 거래 조건은 어떤지 확인이 필요합니다.",
+ "4": "실적 흐름입니다. 매출은 2023년 88억 7천만 원에서 2025년 45억 6천만 원으로 절반 가까이 줄었습니다. 영업이익은 59퍼센트, 당기순이익은 76퍼센트 감소했습니다. 그런데 마진은 오히려 좋아졌습니다. 매출원가율이 6.5퍼센트포인트 개선됐고, 에비타 마진은 6.2퍼센트에서 9.1퍼센트로 올랐습니다. 물량이 빠졌을 뿐 제품 경쟁력은 유지되고 있다는 신호입니다. 대표님께는 2023년의 88억 원 매출이 어떤 수주였는지, 그 수준을 다시 만들 파이프라인이 있는지 여쭤보면 좋겠습니다.",
+ "5": "재무 체력 진단입니다. 열여섯 개 지표 가운데 우수 3개, 양호 5개, 위험 8개입니다. 정리하면 버티는 힘은 충분하지만, 버는 힘과 크는 힘에는 경고등이 켜졌습니다. 부채비율, 유동비율 같은 안정성 지표는 양호하거나 우수합니다. 반면 수익성 네 개와 성장성 네 개 지표가 모두 위험 구간입니다. 미팅에서는 이렇게 말씀드리면 됩니다. 회사가 쓰러질 걱정은 없습니다. 다만 이익을 어떻게 키우고 어떻게 가져갈지를 같이 설계해야 합니다.",
+ "6": "현금과 차입 경보입니다. 통장에 남은 돈은 1,918만 원으로, 한 달 매출의 5퍼센트입니다. 2년 사이 93퍼센트가 줄었습니다. 영업이익 1억 3천2백만 원 가운데 8천3백만 원, 즉 63퍼센트가 이자로 나가고 있습니다. 장기차입금은 21억 7천만 원입니다. 또 총자산의 47퍼센트가 개발비 같은 무형자산이라, 상각이나 손상이 생기면 자본이 바로 줄고 금융기관 평가에서도 불리합니다. 이익이 장부에만 쌓이고 현금이 없으면, 배당과 퇴직금, 세금을 낼 때 결국 차입으로 메워야 합니다.",
+ "7": "비용 구조입니다. 종업원 1인당 매출이 2억 8천6백만 원에서 1억 2천만 원으로 줄었습니다. 2년 사이 사람은 23퍼센트 늘었는데 매출은 줄었기 때문입니다. 경비율은 꾸준히 낮아지고 있어 원가 관리는 잘 되고 있습니다. 다만 제조 노무비 비중이 매출의 2.9퍼센트에서 12퍼센트로 올랐습니다. 연구개발비는 2억 1천만 원으로 매출의 4.7퍼센트이니, 연구소 세액공제 적용과 사후관리 서류를 확인해 두셔야 합니다.",
+ "8": "기업가치 미래 시뮬레이션입니다. 지금 11억 2천만 원인 회사가 업종 평균 성장률을 가정하면 20년 뒤 201억 원이 됩니다. 현재 1주당 가치는 1,303원으로, 액면가의 2.6배입니다. 같은 지분 10퍼센트를 성년 자녀분께 증여할 때, 지금 하면 증여세가 602만 원이지만 2036년에 하면 약 8천9백만 원으로, 약 15배가 됩니다. 최근 2년 순이익이 낮아 주가가 눌려 있는 지금이, 주식을 옮기기에 가장 싼 시점입니다.",
+ "9": "배당과 퇴직금 플랜의 효과입니다. 매년 2억 원씩 배당하고, 대표님 퇴직금 8억 9천만 원을 규정으로 설계하면, 대표님 퇴직 예정인 2044년 기업가치가 155억 5천만 원에서 110억 1천만 원으로, 45억 4천만 원 줄어듭니다. 기업가치가 낮아지면 그만큼 승계 비용도 줄어듭니다. 실행 순서는 정관 정비, 중간배당, 임원퇴직금 규정, 그리고 매년 재평가입니다. 다만 지금 현금이 1,900만 원 정도뿐이라, 첫해는 배당 규모를 줄여 단계적으로 시작하시길 권합니다.",
+ "10": "대표님 보상 설계입니다. 똑같이 6억 3천8백만 원을 받으셔도, 급여로 받으면 세금과 4대보험이 2억 7천3백만 원, 배당으로 받으면 2억 5천5백만 원, 퇴직금으로 받으면 6천2백만 원입니다. 퇴직금이 가장 유리합니다. 현재 임원 여섯 분의 급여 합계는 연 5,150만 원이라, 이 수준으로는 충분한 퇴직금을 만들기 어렵습니다. 급여 수준과 지급배수를 함께 설계하고, 연봉 일부를 2천만 원 이하 배당으로 나누면 총 실효세율을 더 낮출 수 있습니다. 출발점은 임원퇴직금 지급규정 제정과 주주총회 결의입니다.",
+ "11": "자기주식과 이익소각입니다. 신이익소각의 적합 요건 네 가지 가운데 세 가지를 충족합니다. 가족 주주 구성, 자본금 3억 원 이상, 충분한 미처분이익잉여금입니다. 부채비율은 업종보다 높지만 표준 기준으로는 양호 구간입니다. 방식은 이렇습니다. 대표님 지분을 배우자에게 시가로 증여하면 10년간 6억 원까지 공제됩니다. 이후 회사가 그 주식을 시가에 사들이면 양도차익이 없고, 이를 이익소각하면 잉여금이 줄어 주가도 안정됩니다. 잉여금 9억 7천만 원을 대표님 가족 자산으로 옮기는 통로입니다. 다만 취득 대금이 배우자에게 실질적으로 귀속돼야 하는 등 실행 전 주의사항이 있습니다.",
+ "12": "제도, 인증, 노무입니다. 청년을 정규직으로 채용하면 1명당 720만 원을 지원받을 수 있고, 안전보건 관리체계 컨설팅과 유연근무 컨설팅은 무료입니다. 상시 22명 사업장이므로 취업규칙 작성과 노동청 신고가 의무이고, 미신고 시 과태료가 최대 500만 원입니다. 근로계약서, 임금명세서, 연차 관리도 함께 점검해야 합니다. 기업부설연구소는 연구보고서와 연구노트를 5년간 보관해야 세액공제가 유지됩니다.",
+ "13": "기업규정 기본 패키지입니다. 임원퇴직금 규정 하나로 비용 인정되는 퇴직금이 3억 원에서 8억 9천만 원으로, 약 3배가 됩니다. 규정이 없으면 퇴직 전 1년 총급여의 10분의 1에 근속연수를 곱한 금액까지만 인정되기 때문입니다. 정관에는 중간배당과 이익소각 조항을 우선 반영합니다. 복리후생비는 인건비 대비 8.2퍼센트로 적정 수준이니 지급 기준을 문서로 남기시면 됩니다. 담당자께는 정관 사본, 임원 보수와 퇴직금 규정의 주주총회 결의 여부, 취업규칙 신고필증 확인을 부탁드립니다.",
+ "14": "업종별 인증전략입니다. 인증 사다리 다섯 칸 가운데 두 칸, 기업부설연구소와 특허는 이미 올랐습니다. 수도계량기 제조는 기술제조업이라 이노비즈 경로가 맞고, 다음 단계는 벤처 인증, 그리고 이노비즈입니다. 연구소와 특허 21건이 있어 벤처 요건에 가깝습니다. 인증을 받으면 정책자금과 보증 우대, 조달 가점을 기대할 수 있고, 장기차입금 21억 7천만 원의 금리 부담을 줄이는 데도 연결됩니다.",
+ "15": "마지막으로 실행 로드맵입니다. 열두 개 과제를 세 단계로 정리했습니다. 즉시, 1개월에서 3개월 안에는 정관과 임원 규정 정비, 가지급금 3천만 원 정리, 대표님 유고 대비, 노무 서류 점검을 합니다. 6개월 안에는 고용지원금 신청, 인증 착수, 급여와 배당 믹스 설계, 현금흐름 관리를 진행합니다. 1년 이상 중장기로는 정기 배당 개시, 지분 이동, 자기주식 이익소각, 퇴직금 재원 적립을 추진합니다. 회사는 튼튼합니다. 쌓인 이익이 대표님 것이 되는 통로를 만드는 것, 그것이 이번 컨설팅의 목표입니다."
+};
+(function(){
+  const ss=window.speechSynthesis;
+  const $=id=>document.getElementById(id);
+  const box=$('vx'),cap=$('vxTxt'),pg=$('vxPg'),bar=$('vxBar'),sel=$('vxVoice'),warn=$('vxWarn');
+  const ICON_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>이 화면 듣기';
+  const ICON_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>일시정지';
+  const ICON_RESUME='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>이어 듣기';
+  const store={get(k){try{return localStorage.getItem('vx.'+k)}catch(e){return null}},set(k,v){try{localStorage.setItem('vx.'+k,v)}catch(e){}}};
+  if(!ss||typeof SpeechSynthesisUtterance==='undefined'){
+    $('vxFab').addEventListener('click',()=>box.classList.add('open'));$('vxClose').addEventListener('click',()=>box.classList.remove('open'));
+    $('vxPlay').innerHTML=ICON_PLAY;$('vxPlay').disabled=true;warn.style.display='block';
+    warn.textContent='이 브라우저는 음성 읽기를 지원하지 않습니다. Microsoft Edge 또는 Chrome으로 열어 주세요.';return;
+  }
+
+  /* ---- 목소리 고르기: 한국어 여성 · 자연스러운(Neural/Online) 목소리 우선 ---- */
+  const FEMALE=/sunhi|선희|jimin|지민|seohyeon|서현|soonbok|순복|yujin|유진|heami|해미|yuna|유나|sora|소라|seoyeon|서연|google 한국|google korean|female|여성|여자/i;
+  const MALE=/injoon|인준|hyunsu|현수|bongjin|봉진|gookmin|국민|minsu|민수|jihun|지훈|\bmale\b|남성|남자/i;
+  function score(v){
+    const n=v.name+' '+(v.voiceURI||'');let s=0;
+    if(FEMALE.test(n))s+=100;else if(MALE.test(n))s-=200;else s+=10;
+    if(/natural|neural|online|premium|enhanced/i.test(n))s+=40;
+    if(/sunhi|선희/i.test(n))s+=15;
+    if(/google/i.test(n))s+=20;
+    if(/yuna|유나/i.test(n))s+=12;
+    return s;
+  }
+  let voices=[],voice=null;
+  function loadVoices(){
+    voices=ss.getVoices().filter(v=>/^ko([-_]|$)/i.test(v.lang)).sort((a,b)=>score(b)-score(a));
+    if(voices.some(v=>!MALE.test(v.name)))voices=voices.filter(v=>!MALE.test(v.name));
+    if(!voices.length){
+      sel.innerHTML='<option>한국어 목소리 없음</option>';$('vxVoiceName').textContent='한국어 목소리를 찾지 못했습니다';
+      warn.style.display='block';
+      warn.innerHTML='이 기기에 한국어 음성이 설치돼 있지 않습니다. Windows: 설정 → 시간 및 언어 → 음성 → "음성 추가"에서 한국어 설치. 또는 Microsoft Edge·Chrome으로 열면 온라인 한국어 목소리를 쓸 수 있습니다.';
+      return;
+    }
+    warn.style.display='none';
+    sel.innerHTML=voices.map((v,i)=>`<option value="${i}">${v.name.replace(/^Microsoft\s*/,'').replace(/ - Korean.*$/,'')}${FEMALE.test(v.name)?' · 여성':MALE.test(v.name)?' · 남성':''}${v.localService?'':' · 온라인'}</option>`).join('');
+    const saved=store.get('voice2');let idx=saved?voices.findIndex(v=>v.name===saved):-1;
+    if(idx<0)idx=0;sel.value=idx;voice=voices[idx];showVoice();
+  }
+  function showVoice(){if(voice)$('vxVoiceName').textContent=voice.name.replace(/^Microsoft\s*/,'').replace(/ - Korean.*$/,'')+(voice.localService?' · 오프라인 가능':' · 인터넷 필요');}
+  loadVoices();if('onvoiceschanged' in ss)ss.addEventListener?ss.addEventListener('voiceschanged',loadVoices):(ss.onvoiceschanged=loadVoices);
+  setTimeout(loadVoices,700);
+  sel.addEventListener('change',()=>{voice=voices[+sel.value];store.set('voice2',voice?voice.name:'');showVoice();if(state==='playing'){speakFrom(idx)}else sample();});
+  const toneSel=$('vxTone');toneSel.value=store.get('tone')||'0.86';if(!toneSel.value)toneSel.value='0.86';
+  toneSel.addEventListener('change',()=>{store.set('tone',toneSel.value);if(state==='playing')speakFrom(idx);else sample();});
+  function sample(){if(state==='playing')return;ss.cancel();const u=new SpeechSynthesisUtterance('안녕하세요. 오늘 경영진단 결과를 설명해 드리겠습니다.');u.lang='ko-KR';if(voice)u.voice=voice;u.rate=+rateSel.value||0.95;u.pitch=+toneSel.value||1;setTimeout(()=>ss.speak(u),60);}
+  $('vxTry').addEventListener('click',sample);
+  const rateSel=$('vxRate');rateSel.value=store.get('rate')||'0.95';if(!rateSel.value)rateSel.value='0.95';
+  rateSel.addEventListener('change',()=>{store.set('rate',rateSel.value);if(state==='playing')speakFrom(idx)});
+  const auto=$('vxAuto');auto.checked=store.get('auto')==='1';auto.addEventListener('change',()=>store.set('auto',auto.checked?'1':'0'));
+
+  /* ---- 대본 준비: 문장 단위로 나눠서 읽기 (Chrome 긴 문장 끊김 방지) ---- */
+  function clean(t){return String(t).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();}
+  function speakable(t){ // 화면용 기호를 말로 바꿈 (대본에 남은 기호 대비)
+    return t.replace(/\(주\)/g,'').replace(/(\d)\s*%p/g,'$1퍼센트포인트').replace(/(\d)\s*%/g,'$1퍼센트')
+      .replace(/(\d{4})\.(\d{1,2})\.(\d{1,2})/g,(m,y,mo,d)=>`${y}년 ${+mo}월 ${+d}일`).replace(/(\d{4})\.(\d{2})(?!\d)/g,(m,y,mo)=>`${y}년 ${+mo}월`)
+      .replace(/→/g,', ').replace(/[·•◆]/g,', ').replace(/~/g,'에서 ').replace(/\s+/g,' ');
+  }
+  function sentencesFor(i){
+    let t=NARR[i]||NARR[String(i)];
+    if(!t){const m=document.getElementById('main');const h=m.querySelector('h2'),k=m.querySelector('.hook');t=(h?clean(h.textContent)+'. ':'')+(k?clean(k.textContent):'');}
+    if(Array.isArray(t))t=t.join(' ');
+    return clean(t).split(/(?<=[.?!])\s+(?=\S)/).map(s=>s.trim()).filter(Boolean);
+  }
+
+  /* ---- 재생 상태 ---- */
+  let state='idle',list=[],idx=0,page=0,token=0,watchdog=null;
+  const curPage=()=>typeof cur!=='undefined'?cur:0;
+  const curPageSafe=()=>state==='idle'?curPage():page;
+  const total=()=>typeof S!=='undefined'?S.length:0;
+  function title(i){return i===0?'전체 보기':`${String(i).padStart(2,'0')} · ${S[i-1].t}`;}
+  function ui(){
+    $('vxPlay').innerHTML=state==='playing'?ICON_PAUSE:state==='paused'?ICON_RESUME:ICON_PLAY;
+    box.classList.toggle('playing',state==='playing');document.body.classList.toggle('vx-reading',state==='playing');
+    $('vxMPlay').innerHTML=state==='playing'?'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+    $('vxMTxt').textContent=(state==='idle'?'음성 설명 · ':'')+title(curPageSafe())+(state!=='idle'&&list.length?`  ${Math.min(idx+1,list.length)}/${list.length}`:'');
+    bar.style.width=list.length?((state==='idle'?0:idx+(state==='playing'?0.5:0))/list.length*100)+'%':'0';
+  }
+  function show(){pg.textContent=title(page)+(list.length?`  ·  ${Math.min(idx+1,list.length)}/${list.length}`:'');cap.textContent=list[idx]||'';}
+  function speakFrom(n){
+    const my=++token;ss.cancel();clearTimeout(watchdog);
+    if(n>=list.length){finishPage();return;}
+    idx=Math.max(0,n);state='playing';show();ui();
+    const u=new SpeechSynthesisUtterance(speakable(list[idx]));
+    u.lang='ko-KR';if(voice)u.voice=voice;u.rate=+rateSel.value||0.95;u.pitch=+toneSel.value||1;u.volume=1;
+    let started=false;
+    u.onstart=()=>{started=true};
+    u.onend=()=>{if(my!==token)return;clearTimeout(watchdog);speakFrom(idx+1)};
+    u.onerror=e=>{if(my!==token||e.error==='interrupted'||e.error==='canceled')return;fallback(e.error)};
+    // 온라인 목소리가 인터넷 없이 응답하지 않을 때 기기 내장 목소리로 전환
+    if(voice&&!voice.localService)watchdog=setTimeout(()=>{if(my===token&&!started)fallback('timeout')},5000);
+    setTimeout(()=>{if(my===token)ss.speak(u)},60);
+  }
+  function fallback(why){
+    const local=voices.find(v=>v.localService&&v!==voice&&score(v)>0)||voices.find(v=>v.localService&&v!==voice);
+    if(voice&&!voice.localService&&local){
+      voice=local;sel.value=voices.indexOf(local);showVoice();
+      warn.style.display='block';warn.textContent='온라인 목소리에 연결되지 않아 기기 내장 목소리로 바꿨습니다.';
+      speakFrom(idx);
+    }else{state='idle';ui();warn.style.display='block';warn.textContent='음성을 재생하지 못했습니다 ('+why+'). 다른 목소리를 골라 보세요.';}
+  }
+  function finishPage(){
+    if(auto.checked&&curPage()<total()){autoNav=true;go(curPage()+1);return;}
+    state='idle';idx=list.length;ui();bar.style.width='100%';
+  }
+  let autoNav=false;
+  function startPage(){page=curPage();list=sentencesFor(page);speakFrom(0);}
+  function pause(){token++;ss.cancel();clearTimeout(watchdog);state='paused';ui();}
+  function stop(){token++;ss.cancel();clearTimeout(watchdog);state='idle';idx=0;ui();page=curPage();list=sentencesFor(page);show();cap.textContent='▶ 를 누르면 지금 보고 있는 화면을 설명합니다.';}
+  function toggle(){
+    if(state==='playing')pause();
+    else if(state==='paused'&&page===curPage())speakFrom(idx);
+    else startPage();
+  }
+  $('vxPlay').addEventListener('click',toggle);
+  $('vxStop').addEventListener('click',stop);
+  $('vxPrev').addEventListener('click',()=>{if(state==='idle'){page=curPage();list=sentencesFor(page);}speakFrom(Math.max(0,idx-1))});
+  $('vxNext').addEventListener('click',()=>{if(state==='idle'){page=curPage();list=sentencesFor(page);idx=-1;}speakFrom(idx+1)});
+  $('vxFab').addEventListener('click',()=>{setMini(false);page=curPage();if(state==='idle'){list=sentencesFor(page);show();cap.textContent='▶ 를 누르면 지금 보고 있는 화면을 설명합니다.';}});
+  $('vxClose').addEventListener('click',()=>{box.classList.remove('open','mini');if(state!=='idle')stop();});
+  function setMini(on){box.classList.add('open');box.classList.toggle('mini',on);store.set('mini',on?'1':'0');ui();}
+  $('vxMin').addEventListener('click',()=>setMini(true));
+  $('vxExpand').addEventListener('click',()=>setMini(false));
+  $('vxMPlay').addEventListener('click',toggle);
+  $('vxMStop').addEventListener('click',stop);
+  new MutationObserver(()=>document.body.classList.toggle('vx-open',box.classList.contains('open')&&!box.classList.contains('mini'))).observe(box,{attributes:true,attributeFilter:['class']});
+
+  /* 화면 크기: 대시보드 본문을 축소/확대, '한 화면에 맞춤'은 스크롤 없이 화면 전체가 보이도록 자동 축소 */
+  const mainEl=document.getElementById('main');
+  let zoom=store.get('zoom')||'1';
+  function applyZoom(){
+    let z;
+    if(zoom==='fit'){
+      mainEl.style.zoom=1;const top=mainEl.getBoundingClientRect().top+window.scrollY;
+      const h=mainEl.scrollHeight-parseFloat(getComputedStyle(mainEl).paddingBottom||0)+28;
+      z=Math.max(.5,Math.min(1,(window.innerHeight-Math.max(0,top)-(box.classList.contains('open')?60:8))/h));
+    }else z=Math.max(.5,Math.min(1.3,+zoom||1));
+    mainEl.style.zoom=z;$('vxZv').textContent=Math.round(z*100)+'%';
+    $('vxZFit').classList.toggle('on',zoom==='fit');$('vxMFit').style.color=zoom==='fit'?'var(--p,#5B63F6)':'';
+  }
+  function setZoom(v){zoom=String(v);store.set('zoom',zoom);applyZoom();}
+  const curZ=()=>parseFloat(mainEl.style.zoom)||1;
+  $('vxZOut').addEventListener('click',()=>setZoom(Math.max(.5,Math.round((curZ()-.1)*10)/10)));
+  $('vxZIn').addEventListener('click',()=>setZoom(Math.min(1.3,Math.round((curZ()+.1)*10)/10)));
+  $('vxZFit').addEventListener('click',()=>setZoom(zoom==='fit'?1:'fit'));
+  $('vxMFit').addEventListener('click',()=>setZoom(zoom==='fit'?1:'fit'));
+  window.addEventListener('resize',()=>{if(zoom==='fit')applyZoom()});
+  if(store.get('mini')==='1')box.classList.add('mini');
+  applyZoom();
+  ui();
+
+  /* 화면 이동과 연동: 읽는 중에 화면을 넘기면 새 화면을 이어서 읽음 */
+  const _go=go;
+  go=function(i){
+    const was=state;_go(i);applyZoom();
+    if(autoNav||was==='playing'){autoNav=false;box.classList.add('open');startPage();}
+    else if(was==='paused'){stop();}
+    else if(box.classList.contains('open')){page=curPage();list=sentencesFor(page);idx=0;show();cap.textContent='▶ 를 누르면 지금 보고 있는 화면을 설명합니다.';}
+
+    ui();
+  };
+  document.addEventListener('keydown',e=>{
+    if(e.target.closest&&e.target.closest('input,select,textarea'))return;
+    if(e.code==='Space'){e.preventDefault();box.classList.add('open');toggle();}
+    else if(e.key==='Escape'){stop();}
+    else if(e.key==='v'||e.key==='V'||e.key==='ㅍ'){if(!box.classList.contains('open'))setMini(false);else setMini(!box.classList.contains('mini'));}
+    else if(e.key==='f'||e.key==='F'||e.key==='ㄹ'){setZoom(zoom==='fit'?1:'fit');}
+  });
+  window.addEventListener('beforeunload',()=>ss.cancel());
+})();
+</script>
+<!--VOICE:END-->
+
+</body>
+</html>
